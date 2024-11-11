@@ -18,12 +18,11 @@ async function afficherProjets() {
         // Ajout de l'image du projet
         const img = document.createElement('img');
         img.src = projet.imageUrl; 
-        img.alt = projet.nom; 
         figure.appendChild(img);
 
         // Ajout du titre du projet
         const figcaption = document.createElement('figcaption');
-        figcaption.textContent = projet.nom; // Assurez-vous que 'nom' est bien le titre du projet
+        figcaption.textContent = projet.title;
         figure.appendChild(figcaption);
 
         // Ajout de <figure> dans le conteneur
