@@ -18,6 +18,7 @@ async function afficherProjets() {
         // Ajout de l'image du projet
         const img = document.createElement('img');
         img.src = projet.imageUrl; 
+        img.alt = projet.title;
         figure.appendChild(img);
 
         // Ajout du titre du projet
