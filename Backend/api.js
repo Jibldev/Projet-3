@@ -1,36 +1,35 @@
-async function fetchDataFromAPI() {
-    try {
+async function afficherProjets() {
+    const container = document.querySelector(".gallery"); 
+
+    // Récupération des projets depuis l'API ou le localStorage
+    let projets = localStorage.getItem('project');
+    if (!projets) {
         const response = await fetch("http://localhost:5678/api/works");
-        if (!response.ok) {
-            throw new Error(`Erreur HTTP ! statut : ${response.status}`);
-        }
-        const data = await response.json();
-        console.log('Données récupérées :', data); // Affiche les données dans la console du navigateur
-    } catch (error) {
-        console.error('Erreur lors de la récupération des données :', error);
+        projets = await response.json();
+        localStorage.setItem('project', JSON.stringify(projets));
+    } else {
+        projets = JSON.parse(projets);
     }
-  }
-fetchDataFromAPI();
 
-// Ajout des images via l'API !-> //
+    // Parcours de chaque projet et création de l'élément <figure>
+    projets.forEach(projet => {
+        const figure = document.createElement('figure');
 
-//Récupération des projets eventuellement stockées dans le localStorage
-let project = window.localStorage.getItem('project');
+        // Ajout de l'image du projet
+        const img = document.createElement('img');
+        img.src = projet.imageUrl; 
+        img.alt = projet.nom; 
+        figure.appendChild(img);
 
-if (project === null) {
-    // Récupération des projets depuis l'API
-    const reponse = await fetch("http://localhost:5678/api/works");
-    project = await reponse.json();
-    // Transformation des projets en JSON
-    const projectvalue = JSON.stringify(project);
-    // Stockage des informations dans le localStorage
-    window.localStorage.setItem("project", projectvalue);
-} else {
-    project = JSON.parse(project);
+        // Ajout du titre du projet
+        const figcaption = document.createElement('figcaption');
+        figcaption.textContent = projet.nom; // Assurez-vous que 'nom' est bien le titre du projet
+        figure.appendChild(figcaption);
+
+        // Ajout de <figure> dans le conteneur
+        container.appendChild(figure);
+    });
 }
 
-
-// Création de la fonction qui récupère les projets !-> //
-
-
-
+// Appel de la fonction pour afficher les projets
+afficherProjets();
