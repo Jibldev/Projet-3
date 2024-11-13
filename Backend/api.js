@@ -28,24 +28,22 @@ async function afficherBoutonsFiltres() {
     button.setAttribute("data-category", category.name); // Utilise le nom de la catégorie pour le filtre
     button.textContent = category.name;
     button.addEventListener("click", () => {
-        activerBouton(button); // Active le bouton de la catégorie sélectionnée
-        afficherProjets(category.name);
-      });
-          filtersContainer.appendChild(button);
+      activerBouton(button); // Active le bouton de la catégorie sélectionnée
+      afficherProjets(category.name);
+    });
+    filtersContainer.appendChild(button);
   });
 }
 
 // Fonction pour activer le bouton sélectionné et désactiver les autres
 function activerBouton(boutonActif) {
-    // Supprime la classe "active" de tous les boutons
-    document.querySelectorAll("#filters .button").forEach((btn) => {
-      btn.classList.remove("active");
-    });
-    // Ajoute la classe "active" au bouton cliqué
-    boutonActif.classList.add("active");
-  }
-
-
+  // Supprime la classe "active" de tous les boutons
+  document.querySelectorAll("#filters .button").forEach((btn) => {
+    btn.classList.remove("active");
+  });
+  // Ajoute la classe "active" au bouton cliqué
+  boutonActif.classList.add("active");
+}
 
 // Fonction pour afficher les projets
 async function afficherProjets(category = "all") {
@@ -87,7 +85,6 @@ async function afficherProjets(category = "all") {
     container.appendChild(figure);
   });
 }
-
 
 // Appel de la fonction pour afficher les boutons et les projets au chargement de la page
 afficherBoutonsFiltres();
