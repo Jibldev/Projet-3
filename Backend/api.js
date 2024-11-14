@@ -89,3 +89,26 @@ async function afficherProjets(category = "all") {
 // Appel de la fonction pour afficher les boutons et les projets au chargement de la page
 afficherBoutonsFiltres();
 afficherProjets();
+
+
+// Login success //
+
+document.addEventListener("DOMContentLoaded", function() {
+  const isAuthenticated = localStorage.getItem("isAuthenticated");
+
+  if (isAuthenticated !== "true") {
+    window.location.href = "login.html"; // Redirige vers la page de connexion si l'utilisateur n'est pas authentifié
+  } else {
+    activerModeEdition(); // Active le mode d'édition si l'utilisateur est connecté
+  }
+});
+
+// Fonction pour activer le mode d'édition
+function activerModeEdition() {
+  const editButton = document.getElementById("edit-button");
+  if (editButton) {
+    editButton.style.display = "block"; // Affiche le bouton d'édition ou les options de modification
+  }
+
+  // Autres fonctionnalités d'édition ici
+}
