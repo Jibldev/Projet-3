@@ -94,21 +94,29 @@ afficherProjets();
 // Login success //
 
 document.addEventListener("DOMContentLoaded", function() {
-  const isAuthenticated = localStorage.getItem("isAuthenticated");
+  const authLink = document.getElementById("auth-link");
 
-  if (isAuthenticated !== "true") {
-    window.location.href = "login.html"; // Redirige vers la page de connexion si l'utilisateur n'est pas authentifié
-  } else {
-    activerModeEdition(); // Active le mode d'édition si l'utilisateur est connecté
+  // Vérifier la présence du token pour définir l'état du lien
+  function updateAuthLink() {
+    const authToken = localStorage.getItem("authToken");
+    if (authToken) {
+      authLink.textContent = "Logout"; // Affiche "Logout" si l'utilisateur est connecté
+      authLink.href = "#"; // Empêche une redirection inutile
+      authLink.addEventListener("click", handleLogout);
+    } else {
+      authLink.textContent = "Login"; // Affiche "Login" si l'utilisateur n'est pas connecté
+      authLink.href = "login.html"; // Lien vers la page de connexion
+      authLink.removeEventListener("click", handleLogout); // Supprime le gestionnaire de déconnexion
+    }
   }
+
+  // Fonction pour gérer la déconnexion
+  function handleLogout(event) {
+    event.preventDefault(); // Empêche la redirection si "Logout" est cliqué
+    localStorage.removeItem("authToken"); // Supprime le token
+    updateAuthLink(); // Met à jour l'état du lien
+    window.location.href = "login.html"; // Redirige vers la page de connexion
+  }
+
+  updateAuthLink();
 });
-
-// Fonction pour activer le mode d'édition
-function activerModeEdition() {
-  const editButton = document.getElementById("edit-button");
-  if (editButton) {
-    editButton.style.display = "block"; // Affiche le bouton d'édition ou les options de modification
-  }
-
-  // Autres fonctionnalités d'édition ici
-}

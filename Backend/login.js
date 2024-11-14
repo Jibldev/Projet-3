@@ -1,19 +1,32 @@
-// Création du login //
+document.getElementById("connexion").addEventListener("click", async function(event) {
+  event.preventDefault();
 
-document.getElementById("connexion").addEventListener("click", function(event) {
-  event.preventDefault(); // Empêche la soumission par défaut du formulaire
-  
-  // Récupérer les valeurs des champs
   const email = document.getElementById("email").value;
   const password = document.getElementById("pass").value;
 
-  // Exemple de vérification (utilisez vos propres critères de validation ou API)
-  if (email === "sophie.bluel@test.tld" && password === "S0phie") {
-    // Connexion réussie
-    localStorage.setItem("isAuthenticated", "true"); // Stocke l'état de connexion
-    window.location.href = "index.html"; // Redirige vers la page principale
-  } else {
-    // Afficher le message d'erreur
-    alert("Erreur dans l’identifiant ou le mot de passe");
+  try {
+    // Envoi des identifiants à l'API
+    const response = await fetch("http://localhost:5678/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    // Vérification de la réponse
+    if (response.ok) {
+      const data = await response.json();
+      
+      // Stocker le token d'authentification (ou autre identifiant) dans le localStorage
+      localStorage.setItem("authToken", data.token); // Assurez-vous que l'API renvoie un token
+      window.location.href = "index.html"; // Rediriger vers la page principale
+      console.log("Success")
+    } else {
+      alert ("Identifiant ou mot de passe incorrect") // Erreur identifiant ou mot de passe
+    }
+  } catch (error) {
+    console.error("Erreur lors de la connexion :", error);
+    alert ("Incorrect") // Erreur serveur
   }
 });
