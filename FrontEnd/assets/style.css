@@ -85,6 +85,28 @@ h2{
 	font-size: 30px;
 	color: #1D6154
 }
+.title-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px; /* Espace entre le titre et le bouton */
+}
+
+.edit-button {
+  background: none;
+  border: none;
+  font-size: 1rem; /* Taille du texte */
+  display: flex;
+  cursor: pointer;
+	margin-top: -25px;
+}
+
+.edit-button i {
+  margin-right: 4px; /* Espace entre l'icône et le texte "modifier" */
+}
+
+.edit-projects-button{
+	display: block;
+}
 nav ul {
 	display: flex;
 	align-items: center;

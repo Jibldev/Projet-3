@@ -15,7 +15,7 @@ async function afficherBoutonsFiltres() {
   boutonTous.setAttribute("data-category", "all");
   boutonTous.textContent = "Tous";
   boutonTous.addEventListener("click", () => {
-    activerBouton(boutonTous); // Active le bouton "Tous"
+    activerBouton(boutonTous);
     afficherProjets("all");
   });
   filtersContainer.appendChild(boutonTous);
@@ -25,10 +25,10 @@ async function afficherBoutonsFiltres() {
   categories.forEach((category) => {
     const button = document.createElement("button");
     button.classList.add("button");
-    button.setAttribute("data-category", category.name); // Utilise le nom de la catégorie pour le filtre
+    button.setAttribute("data-category", category.name);
     button.textContent = category.name;
     button.addEventListener("click", () => {
-      activerBouton(button); // Active le bouton de la catégorie sélectionnée
+      activerBouton(button);
       afficherProjets(category.name);
     });
     filtersContainer.appendChild(button);
@@ -37,20 +37,17 @@ async function afficherBoutonsFiltres() {
 
 // Fonction pour activer le bouton sélectionné et désactiver les autres
 function activerBouton(boutonActif) {
-  // Supprime la classe "active" de tous les boutons
   document.querySelectorAll("#filters .button").forEach((btn) => {
     btn.classList.remove("active");
   });
-  // Ajoute la classe "active" au bouton cliqué
   boutonActif.classList.add("active");
 }
 
 // Fonction pour afficher les projets
 async function afficherProjets(category = "all") {
   const container = document.querySelector(".gallery");
-  container.innerHTML = ""; // Vider le conteneur avant d'ajouter les éléments filtrés
+  container.innerHTML = "";
 
-  // Récupération des projets depuis l'API ou le localStorage
   let projets = localStorage.getItem("project");
   if (!projets) {
     const response = await fetch("http://localhost:5678/api/works");
@@ -60,63 +57,133 @@ async function afficherProjets(category = "all") {
     projets = JSON.parse(projets);
   }
 
-  // Filtrer les projets si une catégorie spécifique est choisie
   const projetsFiltres =
     category === "all"
       ? projets
       : projets.filter((projet) => projet.category.name === category);
-
-  // Parcours de chaque projet filtré et création de l'élément <figure>
   projetsFiltres.forEach((projet) => {
     const figure = document.createElement("figure");
 
-    // Ajout de l'image du projet
     const img = document.createElement("img");
     img.src = projet.imageUrl;
     img.alt = projet.title;
     figure.appendChild(img);
 
-    // Ajout du titre du projet
     const figcaption = document.createElement("figcaption");
     figcaption.textContent = projet.title;
     figure.appendChild(figcaption);
 
-    // Ajout de <figure> dans le conteneur
     container.appendChild(figure);
   });
 }
 
-// Appel de la fonction pour afficher les boutons et les projets au chargement de la page
-afficherBoutonsFiltres();
-afficherProjets();
-
-
-// Login success //
-
-document.addEventListener("DOMContentLoaded", function() {
+// Fonction pour gérer la connexion/déconnexion
+function updateAuthLink() {
   const authLink = document.getElementById("auth-link");
+  const authToken = localStorage.getItem("authToken");
+  if (authToken) {
+    authLink.textContent = "Logout";
+    authLink.href = "#";
+    authLink.addEventListener("click", handleLogout);
+  } else {
+    authLink.textContent = "Login";
+    authLink.href = "login.html";
+    authLink.removeEventListener("click", handleLogout);
+  }
+}
 
-  // Vérifier la présence du token pour définir l'état du lien
-  function updateAuthLink() {
+function handleLogout(event) {
+  event.preventDefault();
+  localStorage.removeItem("authToken");
+  updateAuthLink();
+  window.location.href = "login.html";
+}
+
+
+
+// Fonction pour afficher les projets dans la modale
+function afficherProjetsDansModale(projets) {
+  const modalGallery = document.querySelector(".modal .gallery");
+  modalGallery.innerHTML = ""; // Vider le conteneur de la galerie dans la modale
+
+  projets.forEach((projet) => {
+    const figure = document.createElement("figure");
+
+    const img = document.createElement("img");
+    img.src = projet.imageUrl;
+    img.alt = projet.title;
+    figure.appendChild(img);
+
+    const figcaption = document.createElement("figcaption");
+    figcaption.textContent = projet.title;
+    figure.appendChild(figcaption);
+
+    modalGallery.appendChild(figure);
+  });
+}
+
+// Code pour gérer l'ouverture de la modale
+document.addEventListener("DOMContentLoaded", function () {
+  const editButton = document.querySelector(".edit-button");
+  const editModal = document.getElementById("edit-modal");
+  const closeButton = document.querySelector(".close-button");
+
+  // Récupération des projets depuis le localStorage ou l'API
+  let projets = JSON.parse(localStorage.getItem("project")) || [];
+
+  // Afficher la modale et les projets dedans au clic sur "Modifier les projets"
+  editButton.addEventListener("click", () => {
+    afficherProjetsDansModale(projets); // Appelle la fonction pour afficher les projets dans la modale
+    editModal.style.display = "flex";
+  });
+
+  // Fermer la modale au clic sur le bouton de fermeture
+  closeButton.addEventListener("click", () => {
+    editModal.style.display = "none";
+  });
+
+  // Fermer la modale en cliquant en dehors de celle-ci
+  window.addEventListener("click", (event) => {
+    if (event.target === editModal) {
+      editModal.style.display = "none";
+    }
+  });
+});
+
+// Initialisation au chargement de la page
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    await afficherBoutonsFiltres(); // Charge les boutons de filtrage en premier
+    await afficherProjets(); // Puis charge les projets dans la galerie
+
+    // Initialisation de l'authentification et de la modale après avoir chargé le contenu principal
+    updateAuthLink();
+  } catch (error) {
+    console.error("Erreur lors de l'initialisation de la page :", error);
+  }
+});
+
+// Check if log or not for button //
+document.addEventListener("DOMContentLoaded", function () {
+  const editButton = document.querySelector(".edit-button");
+
+  // Fonction pour vérifier si l'utilisateur est connecté
+  function checkAuthentication() {
     const authToken = localStorage.getItem("authToken");
     if (authToken) {
-      authLink.textContent = "Logout"; // Affiche "Logout" si l'utilisateur est connecté
-      authLink.href = "#"; // Empêche une redirection inutile
-      authLink.addEventListener("click", handleLogout);
+      // Affiche le bouton si l'utilisateur est connecté
+      editButton.style.display = "block";
     } else {
-      authLink.textContent = "Login"; // Affiche "Login" si l'utilisateur n'est pas connecté
-      authLink.href = "login.html"; // Lien vers la page de connexion
-      authLink.removeEventListener("click", handleLogout); // Supprime le gestionnaire de déconnexion
+      // Masque le bouton si l'utilisateur n'est pas connecté
+      editButton.style.display = "none";
     }
   }
 
-  // Fonction pour gérer la déconnexion
-  function handleLogout(event) {
-    event.preventDefault(); // Empêche la redirection si "Logout" est cliqué
-    localStorage.removeItem("authToken"); // Supprime le token
-    updateAuthLink(); // Met à jour l'état du lien
-    window.location.href = "login.html"; // Redirige vers la page de connexion
-  }
+  checkAuthentication(); // Appel initial pour vérifier l'état de connexion
 
-  updateAuthLink();
+  // Event listener pour ouvrir la modale si l'utilisateur est connecté
+  editButton.addEventListener("click", () => {
+    const editModal = document.getElementById("edit-modal");
+    editModal.style.display = "flex";
+  });
 });

@@ -1,0 +1,87 @@
+/* Style de la superposition de la modale */
+#edit-modal {
+  display: none; /* Masquer par défaut */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* S'assurer qu'elle apparaît par-dessus le reste */
+}
+
+/* Contenu de la modale */
+#edit-modal .modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 630px;
+  height: 688px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+/* Titre de la modale */
+#edit-modal .modal-content h2 {
+  font-size: 1.8em;
+  color: black;
+  font-family: 'Work Sans';
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 60px;
+  margin-top: 40px;
+}
+
+/* Galerie d'images dans la modale */
+#edit-modal .gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-left: 67px;
+  max-width: 80%;
+  max-height: 420px;
+  overflow: hidden;
+}
+
+
+#edit-modal .gallery img {
+  width: 80px;
+  height: 120px;
+}
+
+#edit-modal .gallery figcaption {
+  display: none; /* Masque le titre des images */
+}
+
+
+/* Bouton "Ajouter une photo" */
+#edit-modal .add-photo-button {
+  display: block;
+  text-align: baseline;
+  margin: 90px auto;
+  width: 237px;
+  height: 36px;
+  background-color: #2f544e;
+  font-family: 'Syne';
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+#edit-modal .add-photo-button:hover {
+  background-color: #1d6154;
+}
+
+/* Bouton de fermeture (croix) */
+#edit-modal .close-button {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 24px;
+  color: black;
+  cursor: pointer;
+}
